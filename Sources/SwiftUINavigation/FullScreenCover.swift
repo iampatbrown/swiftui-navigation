@@ -48,8 +48,8 @@ extension View {
     @ViewBuilder content: @escaping (Binding<Value>) -> Content
   ) -> some View
   where Content: View {
-    self.fullScreenCover(isPresented: value.isPresent(), onDismiss: onDismiss) {
-      Binding(unwrapping: value).map(content)
+    self.fullScreenCover(item: value.id(type(of: self)), onDismiss: onDismiss) {
+      content($0.base)
     }
   }
 
@@ -79,6 +79,8 @@ extension View {
     @ViewBuilder content: @escaping (Binding<Case>) -> Content
   ) -> some View
   where Content: View {
-    self.fullScreenCover(unwrapping: `enum`.case(casePath), onDismiss: onDismiss, content: content)
+    self.fullScreenCover(item: `enum`.id(case: casePath), onDismiss: onDismiss) {
+      content($0.base)
+    }
   }
 }

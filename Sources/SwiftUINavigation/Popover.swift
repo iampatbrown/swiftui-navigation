@@ -51,10 +51,11 @@ extension View {
     @ViewBuilder content: @escaping (Binding<Value>) -> Content
   ) -> some View where Content: View {
     self.popover(
-      isPresented: value.isPresent(), attachmentAnchor: attachmentAnchor, arrowEdge: arrowEdge
-    ) {
-      Binding(unwrapping: value).map(content)
-    }
+      item: value.id(type(of: self)),
+      attachmentAnchor: attachmentAnchor,
+      arrowEdge: arrowEdge,
+      content: { content($0.base) }
+    )
   }
 
   /// Presents a popover using a binding and case path as the data source for the popover's content.
@@ -85,10 +86,10 @@ extension View {
     @ViewBuilder content: @escaping (Binding<Case>) -> Content
   ) -> some View where Content: View {
     self.popover(
-      unwrapping: `enum`.case(casePath),
+      item: `enum`.id(case: casePath),
       attachmentAnchor: attachmentAnchor,
       arrowEdge: arrowEdge,
-      content: content
+      content: { content($0.base) }
     )
   }
 }
