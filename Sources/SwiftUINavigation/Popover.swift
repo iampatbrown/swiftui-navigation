@@ -51,10 +51,11 @@ extension View {
     @ViewBuilder content: @escaping (Binding<Value>) -> Content
   ) -> some View where Content: View {
     self.popover(
-      item: value.id(type(of: self)),
+      unwrapping: value,
+      case: /.self,
       attachmentAnchor: attachmentAnchor,
       arrowEdge: arrowEdge,
-      content: { content($0.base) }
+      content: content
     )
   }
 
@@ -85,11 +86,18 @@ extension View {
     arrowEdge: Edge = .top,
     @ViewBuilder content: @escaping (Binding<Case>) -> Content
   ) -> some View where Content: View {
-    self.popover(
-      item: `enum`.id(case: casePath),
-      attachmentAnchor: attachmentAnchor,
-      arrowEdge: arrowEdge,
-      content: { content($0.base) }
-    )
+    WithPresentation(enum: `enum`, casePath: casePath) { presentation in
+      self.popover(
+        item: presentation.proxy.item,
+        attachmentAnchor: attachmentAnchor,
+        arrowEdge: arrowEdge,
+        content: { _ in
+          IfLetPresentation(presentation: presentation, content: content)
+            .onDisappear {
+              presentation.proxy.item.wrappedValue = nil
+            }
+        }
+      )
+    }
   }
 }

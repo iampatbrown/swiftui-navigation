@@ -46,7 +46,7 @@ extension View {
     @ViewBuilder content: @escaping (Binding<Value>) -> Content
   ) -> some View
   where Content: View {
-    self.sheet(item: value.id(type(of: self)), onDismiss: onDismiss, content: { content($0.base) })
+    self.sheet(unwrapping: value, case: /.self, onDismiss: onDismiss, content: content)
   }
 
   /// Presents a sheet using a binding and case path as the data source for the sheet's content.
@@ -72,6 +72,14 @@ extension View {
     @ViewBuilder content: @escaping (Binding<Case>) -> Content
   ) -> some View
   where Content: View {
-    self.sheet(item: `enum`.id(case: casePath), onDismiss: onDismiss, content: { content($0.base) })
+    WithPresentation(enum: `enum`, casePath: casePath) { presentation in
+      self.sheet(item: presentation.proxy.item) { _ in
+        IfLetPresentation(presentation: presentation, content: content)
+          .onDisappear {
+            onDismiss?()
+            presentation.proxy.item.wrappedValue = nil
+          }
+      }
+    }
   }
 }
