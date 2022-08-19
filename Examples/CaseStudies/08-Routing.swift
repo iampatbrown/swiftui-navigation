@@ -14,13 +14,15 @@ enum Route {
   case alert(String)
   case link(Int)
   case sheet(Int)
+  case otherSheet(String)
 }
 
 struct Routing: View {
   @State var route: Route?
 
   var body: some View {
-    Form {
+    VStack {
+//    Form { // Different behaviour in form... hmmm.... 
       Section {
         Text(readMe)
       }
@@ -66,6 +68,24 @@ struct Routing: View {
       ) { $count in
         Form {
           Stepper("Number: \(count)", value: $count)
+          Button("Activate Other Sheet") {
+            self.route = .otherSheet("")
+          }
+        }
+      }
+      
+      Button("Other Sheet") {
+        self.route = .otherSheet("")
+      }
+      .sheet(
+        unwrapping: self.$route,
+        case: /Route.otherSheet
+      ) { $text in
+        Form {
+          TextField("Enter text...", text: $text)
+          Button("Activate Sheet") {
+            self.route = .sheet(0)
+          }
         }
       }
     }
