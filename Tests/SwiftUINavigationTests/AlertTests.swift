@@ -5,18 +5,18 @@ import XCTest
 final class AlertTests: XCTestCase {
   func testAlertState() {
     let alert = AlertState(
-      title: .init("Alert!"),
-      message: .init("Something went wrong..."),
-      primaryButton: .destructive(.init("Destroy"), action: .send(true, animation: .default)),
-      secondaryButton: .cancel(.init("Cancel"), action: .send(false))
+      title: "Alert!",
+      message: "Something went wrong...",
+      primaryButton: .destructive("Destroy", action: .send(true, animation: .default)),
+      secondaryButton: .cancel("Cancel", action: .send(false))
     )
     XCTAssertNoDifference(
       alert,
       AlertState(
-        title: .init("Alert!"),
-        message: .init("Something went wrong..."),
-        primaryButton: .destructive(.init("Destroy"), action: .send(true, animation: .default)),
-        secondaryButton: .cancel(.init("Cancel"), action: .send(false))
+        title: "Alert!",
+        message: "Something went wrong...",
+        primaryButton: .destructive("Destroy", action: .send(true, animation: .default)),
+        secondaryButton: .cancel("Cancel", action: .send(false))
       )
     )
 
@@ -51,11 +51,11 @@ final class AlertTests: XCTestCase {
       dump = ""
       customDump(
         ConfirmationDialogState(
-          title: .init("Alert!"),
-          message: .init("Something went wrong..."),
+          title: "Alert!",
+          message: "Something went wrong...",
           buttons: [
-            .destructive(.init("Destroy"), action: .send(true, animation: .default)),
-            .cancel(.init("Cancel"), action: .send(false)),
+            .destructive("Destroy", action: .send(true, animation: .default)),
+            .cancel("Cancel", action: .send(false)),
           ]
         ),
         to: &dump

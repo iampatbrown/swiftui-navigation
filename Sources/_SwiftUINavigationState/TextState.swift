@@ -413,6 +413,7 @@ extension TextState {
 }
 
 extension Text {
+  @_disfavoredOverload
   public init(_ state: TextState) {
     let text: Text
     switch state.storage {
@@ -737,5 +738,17 @@ extension TextState: CustomDumpRepresentable {
     }
 
     return dumpHelp(self)
+  }
+}
+
+// MARK: - ExpressibleByStringInterpolation
+
+extension TextState: ExpressibleByStringInterpolation {
+  public init(stringLiteral value: String) {
+    self.init(LocalizedStringKey(stringLiteral: value))
+  }
+
+  public init(stringInterpolation: LocalizedStringKey.StringInterpolation) {
+    self.init(LocalizedStringKey(stringInterpolation: stringInterpolation))
   }
 }
