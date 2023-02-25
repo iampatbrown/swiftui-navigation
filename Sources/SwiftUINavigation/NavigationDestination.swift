@@ -87,8 +87,28 @@
 
     public func body(content: Content) -> some View {
       content
-        .navigationDestination(isPresented: self.$isPresentedState) { self.destination }
+        .navigationDestination(isPresented: self.$isPresentedState) {
+          _Destination(
+            isPresented: self.isPresented,
+            destination: self.destination
+          )
+        }
         .bind(self.$isPresented, to: self.$isPresentedState)
+    }
+    
+    struct _Destination: View {
+      let isPresented: Bool
+      let destination: Destination
+
+      @Environment(\.dismiss) private var dismiss
+
+      var body: some View {
+        self.destination
+          .onChange(of: self.isPresented) { [wasPresented = self.isPresented] isPresented in
+            guard wasPresented, !isPresented else { return }
+            self.dismiss()
+          }
+      }
     }
   }
 #endif
